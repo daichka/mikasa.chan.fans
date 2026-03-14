@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mikasa❤️</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #0a0a0a; /* Глубокий черный */
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: white;
+        }
+
+        .container {
+            text-align: center;
+            width: 90%;
+            max-width: 320px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #222;
+            margin-bottom: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            color: #efefef;
+        }
+
+        .links-column {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .link-button {
+            width: 100%;
+            height: 55px;
+            border-radius: 50px; /* Круглые края капсулы */
+            background-color: #1a1a1a; /* Темные кнопки */
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            border: 1px solid #333;
+            transition: all 0.25s ease;
+        }
+
+        /* Эффект при нажатии */
+        .link-button:active {
+            transform: scale(0.96);
+            background-color: #333;
+            border-color: #555;
+        }
+
+        /* Скрипт-хак для обхода In-App браузеров */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="image.png" alt="Mikasa" class="profile-pic">
+        
+        <div class="profile-name">Mikasa❤️</div>
+        
+        <div class="links-column">
+            <a href="https://www.fanvue.com/mikasa.chan.fans/fv-1" class="link-button">Exlusive content🔥 & Cht with me😏</a>
+            <a href="https://www.instagram.com/mikasa.chan.fans" class="link-button">Instagram</a>
+            <a href="https://tiktok.com/@mialaurentiam" class="link-button">Tiktok</a>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const ua = navigator.userAgent || navigator.vendor || window.opera;
+            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter/i.test(ua);
+
+            if (isInApp && /Android/i.test(ua)) {
+                const currentUrl = window.location.href.replace(/https?:\/\//, "");
+                // Форсируем открытие через Chrome на Android
+                window.location.href = `intent://${currentUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+            }
+        })();
+    </script>
+</body>
+</html>
