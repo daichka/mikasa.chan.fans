@@ -85,6 +85,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             line-height: 1.2;
+            cursor: pointer;
         }
 
         .link-button.primary {
@@ -93,108 +94,128 @@
             box-shadow: 0 4px 15px rgba(255, 45, 85, 0.1);
         }
 
-        .link-button:active {
-            transform: scale(0.96);
-            background: rgba(255, 255, 255, 0.15);
+        /* Оверлей-подсказка */
+        #in-app-helper {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 10000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            text-align: center;
+            box-sizing: border-box;
+        }
+
+        .arrow-up {
+            font-size: 50px;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            animation: pointing 1s infinite alternate;
+        }
+
+        @keyframes pointing {
+            from { transform: translateY(0); }
+            to { transform: translateY(10px); }
+        }
+
+        .helper-text {
+            font-size: 20px;
+            line-height: 1.4;
+        }
+
+        .copy-btn {
+            margin-top: 20px;
+            padding: 12px 24px;
+            background: var(--accent-color);
+            border: none;
+            color: white;
+            border-radius: 10px;
+            font-weight: bold;
         }
 
         .bg-glow {
             position: absolute;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 300px;
-            height: 300px;
+            top: 20%; left: 50%; transform: translate(-50%, -50%);
+            width: 300px; height: 300px;
             background: radial-gradient(circle, rgba(255, 45, 85, 0.1) 0%, transparent 70%);
-            z-index: 1;
-            pointer-events: none;
-        }
-
-        /* Стили для заглушки In-App браузера */
-        #in-app-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(5, 5, 5, 0.95);
-            backdrop-filter: blur(15px);
-            z-index: 9999;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        #in-app-overlay.active {
-            display: flex;
-        }
-
-        #in-app-overlay h2 {
-            font-size: 24px;
-            margin-bottom: 15px;
-            color: var(--accent-color);
-        }
-
-        #in-app-overlay p {
-            font-size: 16px;
-            line-height: 1.5;
-            color: #ddd;
-            max-width: 300px;
-        }
-
-        .dots-icon {
-            font-size: 40px;
-            margin-bottom: 20px;
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
-            40% {transform: translateY(-20px);}
-            60% {transform: translateY(-10px);}
+            z-index: 1; pointer-events: none;
         }
     </style>
 </head>
 <body>
 
-    <div id="in-app-overlay">
-        <div class="dots-icon">↗️</div>
-        <h2>Открой в браузере!</h2>
-        <p>Для корректной работы сайта нажми на <strong>три точки</strong> в правом верхнем углу и выбери <strong>«Открыть в браузере»</strong>.</p>
+    <div id="in-app-helper">
+        <div class="arrow-up">↗️</div>
+        <div class="helper-text">
+            <h2>Почти готово!</h2>
+            <p>TikTok ограничивает переход.<br>Нажми на <b>три точки</b> сверху и выбери <b>"Открыть в браузере"</b></p>
+        </div>
+        <button class="copy-btn" onclick="copyCurrentUrl()">Скопировать ссылку</button>
     </div>
 
     <div class="bg-glow"></div>
 
     <div class="container">
         <img src="image.webp" alt="Mikasa" class="profile-pic">
-        
         <div class="profile-name">Mikasa❤️</div>
         
         <div class="links-column">
-            <a href="https://www.fanvue.com/mikasa.chan.fans/fv-1" class="link-button primary">
-                Exclusive content🔥 & Chat with me😏
-            </a>
+            <a href="https://www.fanvue.com/mikasa.chan.fans/fv-1" class="link-button primary">Exclusive content🔥 & Chat with me😏</a>
             <a href="https://www.instagram.com/mikasa.chan.fans" class="link-button">Instagram</a>
             <a href="https://tiktok.com/@mialaurentiam" class="link-button">TikTok</a>
         </div>
     </div>
 
     <script>
-        (function() {
-            // Определяем юзер-агент
-            const ua = navigator.userAgent || navigator.vendor || window.opera;
-            // Проверяем популярные in-app браузеры
-            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter|Line/i.test(ua);
+        const ua = navigator.userAgent || navigator.vendor || window.opera;
+        const isInApp = /TikTok|Instagram|FBAN|FBAV/i.test(ua);
+        const isAndroid = /Android/i.test(ua);
 
-            if (isInApp) {
-                // Если мы внутри TikTok/Instagram, показываем оверлей
-                document.getElementById('in-app-overlay').classList.add('active');
-            }
-        })();
+        function copyCurrentUrl() {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Ссылка скопирована! Вставь её в браузере.");
+        }
+
+        // 1. Попытка мгновенного редиректа при загрузке (только для Android)
+        if (isInApp && isAndroid) {
+            const cleanUrl = window.location.href.replace(/https?:\/\//, "");
+            window.location.replace(`intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`);
+        }
+
+        // 2. Если мы всё еще в приложении, показываем помощь
+        if (isInApp) {
+            document.getElementById('in-app-helper').style.display = 'flex';
+        }
+
+        // 3. Обработка кликов по кнопкам
+        document.querySelectorAll('.link-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                if (isInApp) {
+                    e.preventDefault();
+                    const target = this.getAttribute('href');
+                    const cleanTarget = target.replace(/https?:\/\//, "");
+
+                    // Попытка №1: Прямой вызов браузера
+                    if (isAndroid) {
+                        window.location.href = `intent://${cleanTarget}#Intent;scheme=https;package=com.android.chrome;end`;
+                    } else {
+                        // iOS: пытаемся через гугл хром (если есть) или просто просим копировать
+                        window.location.href = `googlechrome://${cleanTarget}`;
+                    }
+
+                    // Попытка №2: Если через секунду мы всё еще тут - копируем в буфер и уведомляем
+                    setTimeout(() => {
+                        navigator.clipboard.writeText(target).then(() => {
+                            alert("Ссылка скопирована! Пожалуйста, вставь её в обычном браузере, так как TikTok блокирует прямые переходы.");
+                        });
+                    }, 1000);
+                }
+            });
+        });
     </script>
 </body>
 </html>
