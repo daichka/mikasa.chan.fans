@@ -85,7 +85,6 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             text-align: center;
             line-height: 1.2;
-            cursor: pointer;
         }
 
         .link-button.primary {
@@ -111,51 +110,61 @@
             pointer-events: none;
         }
 
-        /* Улучшенная заглушка In-App браузера (не мешает кликать на ссылки) */
+        /* Стили для заглушки In-App браузера */
         #in-app-overlay {
             display: none;
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            background: rgba(255, 45, 85, 0.9);
-            backdrop-filter: blur(10px);
+            height: 100%;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(15px);
             z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             text-align: center;
-            padding: 15px 20px;
+            padding: 20px;
             box-sizing: border-box;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
         }
 
         #in-app-overlay.active {
-            display: block;
-            animation: slideDown 0.5s ease;
-        }
-
-        @keyframes slideDown {
-            from { transform: translateY(-100%); }
-            to { transform: translateY(0); }
+            display: flex;
         }
 
         #in-app-overlay h2 {
-            font-size: 18px;
-            margin: 0 0 5px 0;
-            color: white;
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
         }
 
         #in-app-overlay p {
-            font-size: 14px;
-            margin: 0;
-            color: #fff;
-            opacity: 0.9;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #ddd;
+            max-width: 300px;
+        }
+
+        .dots-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
         }
     </style>
 </head>
 <body>
 
     <div id="in-app-overlay">
-        <h2>⚠️ Открой в браузере!</h2>
-        <p>Нажми на три точки в углу ↗️ и выбери «Открыть в браузере» для лучшей работы сайта.</p>
+        <div class="dots-icon">↗️</div>
+        <h2>Открой в браузере!</h2>
+        <p>Для корректной работы сайта нажми на <strong>три точки</strong> в правом верхнем углу и выбери <strong>«Открыть в браузере»</strong>.</p>
     </div>
 
     <div class="bg-glow"></div>
@@ -163,7 +172,7 @@
     <div class="container">
         <img src="image.webp" alt="Mikasa" class="profile-pic">
         
-        <div class="profile-name">Mikasa&#x2764;&#xfe0f;</div>
+        <div class="profile-name">Mikasa❤️</div>
         
         <div class="links-column">
             <a href="https://www.fanvue.com/mikasa.chan.fans/fv-1" class="link-button primary">
@@ -176,61 +185,14 @@
 
     <script>
         (function() {
+            // Определяем юзер-агент
             const ua = navigator.userAgent || navigator.vendor || window.opera;
-            const isIOS = /iPad|iPhone|iPod/.test(ua) && !window.MSStream;
-            const isAndroid = /Android/.test(ua);
-            // Проверка на встроенные браузеры
-            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter|Line|Viber|Snapchat/i.test(ua);
-
-            // Функция для генерации ссылки внешнего браузера
-            function getExternalUrl(url) {
-                const cleanUrl = url.replace(/^https?:\/\//, '');
-                if (isAndroid) {
-                    return `intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`;
-                } else if (isIOS) {
-                    // Пытаемся зафорсить Chrome на iOS, если он установлен
-                    return `googlechrome://${cleanUrl}`;
-                }
-                return url;
-            }
+            // Проверяем популярные in-app браузеры
+            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter|Line/i.test(ua);
 
             if (isInApp) {
-                // 1. Показываем плашку-подсказку сверху страницы
+                // Если мы внутри TikTok/Instagram, показываем оверлей
                 document.getElementById('in-app-overlay').classList.add('active');
-
-                // 2. Агрессивная попытка редиректа при загрузке страницы
-                const currentCleanUrl = window.location.href.replace(/^https?:\/\//, '');
-                if (isAndroid) {
-                    // Используем setTimeout, иногда это обходит блокировку авто-переходов
-                    setTimeout(() => {
-                        window.location.replace(`intent://${currentCleanUrl}#Intent;scheme=https;package=com.android.chrome;end`);
-                    }, 100);
-                } else if (isIOS) {
-                    setTimeout(() => {
-                        window.location.href = `googlechrome://${currentCleanUrl}`;
-                    }, 100);
-                }
-
-                // 3. Перехват кликов по всем ссылкам
-                const links = document.querySelectorAll('.link-button');
-                links.forEach(link => {
-                    const originalHref = link.getAttribute('href');
-                    
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault(); // Останавливаем обычный переход
-                        
-                        const intentUrl = getExternalUrl(originalHref);
-                        
-                        // Пытаемся открыть через Intent/схему во внешнем браузере
-                        window.location.href = intentUrl;
-                        
-                        // Фолбэк: если внешний браузер не открылся за 1.5 секунды 
-                        // (блокировка или нет нужного браузера), просто открываем ссылку внутри WebView
-                        setTimeout(() => {
-                            window.location.href = originalHref;
-                        }, 1500);
-                    });
-                });
             }
         })();
     </script>
