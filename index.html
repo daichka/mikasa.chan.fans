@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikasa &#x2764;&#xfe0f;</title>
+    <title>Mikasa</title>
     <style>
         :root {
             --bg-color: #050505;
-            --accent-color: #ff2d55; /* Неоновый розовый акцент */
+            --accent-color: #ff2d55;
         }
 
         body {
@@ -18,7 +18,6 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            /* Кайфовый анимированный фон */
             background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a0a0a 100%);
             background-size: 400% 400%;
             animation: gradientBG 15s ease infinite;
@@ -37,7 +36,6 @@
             text-align: center;
             width: 90%;
             max-width: 340px;
-            /* Приподнимаем контент чуть выше центра */
             margin-bottom: 12vh; 
             z-index: 2;
         }
@@ -49,7 +47,7 @@
             object-fit: cover;
             border: 2px solid rgba(255, 255, 255, 0.1);
             margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(255, 45, 85, 0.2); /* Легкое свечение */
+            box-shadow: 0 0 25px rgba(255, 45, 85, 0.2);
         }
 
         .profile-name {
@@ -73,8 +71,8 @@
             min-height: 60px;
             padding: 0 20px;
             box-sizing: border-box;
-            border-radius: 18px; /* Более современная форма */
-            background: rgba(255, 255, 255, 0.05); /* Эффект стекла */
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             color: #ffffff;
             display: flex;
@@ -89,7 +87,6 @@
             line-height: 1.2;
         }
 
-        /* Выделение главной кнопки */
         .link-button.primary {
             background: rgba(255, 45, 85, 0.15);
             border-color: rgba(255, 45, 85, 0.4);
@@ -101,7 +98,6 @@
             background: rgba(255, 255, 255, 0.15);
         }
 
-        /* Декоративный элемент на фоне */
         .bg-glow {
             position: absolute;
             top: 20%;
@@ -113,9 +109,63 @@
             z-index: 1;
             pointer-events: none;
         }
+
+        /* Стили для заглушки In-App браузера */
+        #in-app-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(5, 5, 5, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        #in-app-overlay.active {
+            display: flex;
+        }
+
+        #in-app-overlay h2 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--accent-color);
+        }
+
+        #in-app-overlay p {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #ddd;
+            max-width: 300px;
+        }
+
+        .dots-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {transform: translateY(0);}
+            40% {transform: translateY(-20px);}
+            60% {transform: translateY(-10px);}
+        }
     </style>
 </head>
 <body>
+
+    <div id="in-app-overlay">
+        <div class="dots-icon">↗️</div>
+        <h2>Открой в браузере!</h2>
+        <p>Для корректной работы сайта нажми на <strong>три точки</strong> в правом верхнем углу и выбери <strong>«Открыть в браузере»</strong>.</p>
+    </div>
 
     <div class="bg-glow"></div>
 
@@ -135,12 +185,14 @@
 
     <script>
         (function() {
+            // Определяем юзер-агент
             const ua = navigator.userAgent || navigator.vendor || window.opera;
-            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter/i.test(ua);
+            // Проверяем популярные in-app браузеры
+            const isInApp = /Instagram|TikTok|FBAN|FBAV|Twitter|Line/i.test(ua);
 
-            if (isInApp && /Android/i.test(ua)) {
-                const currentUrl = window.location.href.replace(/https?:\/\//, "");
-                window.location.href = `intent://${currentUrl}#Intent;scheme=https;package=com.android.chrome;end`;
+            if (isInApp) {
+                // Если мы внутри TikTok/Instagram, показываем оверлей
+                document.getElementById('in-app-overlay').classList.add('active');
             }
         })();
     </script>
