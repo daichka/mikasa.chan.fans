@@ -2,92 +2,55 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikasa ❤️</title>
-    <style>
-        :root { --accent: #ff2d55; }
-        body { margin: 0; background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .container { width: 90%; max-width: 340px; text-align: center; }
-        .profile-pic { width: 120px; border-radius: 50%; border: 2px solid var(--accent); margin-bottom: 20px; }
-        
-        /* Главная кнопка */
-        .magic-btn { 
-            display: block; padding: 22px; background: var(--accent); color: #fff; 
-            text-decoration: none; border-radius: 16px; font-weight: 800; font-size: 18px;
-            box-shadow: 0 10px 20px rgba(255, 45, 85, 0.4); border: none; width: 100%; cursor: pointer;
-        }
-
-        /* Окно-подсказка (вылезает, если тикток блочит) */
-        #hint { display: none; margin-top: 25px; padding: 15px; background: rgba(255,255,255,0.05); border: 1px dashed var(--accent); border-radius: 12px; }
-        .blink { animation: blinker 1.5s linear infinite; color: var(--accent); font-weight: bold; }
-        @keyframes blinker { 50% { opacity: 0; } }
-    </style>
+    <title>Redirecting...</title>
 </head>
-<body>
+<body style="background: #050505; color: white; display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif;">
 
-    <div class="container">
-        <img src="image.webp" class="profile-pic">
-        <div style="font-size: 24px; font-weight: 800; margin-bottom: 25px;">Mikasa ❤️</div>
-        
-        <button onclick="handleFlow()" class="magic-btn">ОТКРЫТЬ ДОСТУП 🔥</button>
-
-        <div id="hint">
-            <p class="blink">TikTok блокирует переход!</p>
-            <p style="font-size: 14px;">1. Нажми <b>три точки (⋮)</b> в углу.<br>2. Выбери <b>"Открыть в браузере"</b>.</p>
-            <hr style="opacity: 0.1;">
-            <p style="font-size: 12px; opacity: 0.6;">Ссылка уже скопирована в буфер. Если не открылось — просто вставь её в Chrome/Safari.</p>
-        </div>
-    </div>
+    <div id="status">Загрузка защищенного контента...</div>
 
     <script>
-        // Ссылка зашифрована, чтобы робот не забанил домен страницы
-        const codedUrl = "https://www.fanvue.com/mikasa.chan.fans/fv-1";
+        window.onload = function() {
+            const target = "www.fanvue.com/mikasa.chan.fans/fv-1";
+            const fullUrl = "https://" + target;
 
-        function handleFlow() {
-            const ua = navigator.userAgent || navigator.vendor;
-            const isTikTok = /TikTok/i.test(ua);
-            
-            // 1. Сразу копируем ссылку в буфер (на случай провала)
-            copyToClipboard(codedUrl);
+            // ХАК №1: Невидимый iframe с intent (только для Android)
+            // Иногда TikTok пропускает intent внутри iframe, считая это "загрузкой файла"
+            const iframe = document.createElement('iframe');
+            iframe.style.display = 'none';
+            iframe.src = `intent://${target}#Intent;scheme=https;end`;
+            document.body.appendChild(iframe);
 
-            if (isTikTok) {
-                // Показываем инструкцию (она пригодится через секунду)
-                document.getElementById('hint').style.display = 'block';
+            // ХАК №2: Попытка через специфический протокол (для iOS/Android)
+            // Мы пробуем вызвать Chrome/Safari напрямую через протоколы
+            setTimeout(() => {
+                window.location.href = `googlechromes://${target}`;
+            }, 100);
 
-                // 2. Метод "Мета-бросок" (безопаснее, чем intent)
-                // Создаем невидимую ссылку с атрибутом download (тикток не умеет качать и может выкинуть в браузер)
-                const trigger = document.createElement('a');
-                trigger.href = codedUrl;
-                trigger.target = '_blank';
-                trigger.rel = 'noopener noreferrer';
-                
-                // Пробуем имитировать системный клик
-                const clickEvent = new MouseEvent('click', {
-                    view: window,
-                    bubbles: true,
-                    cancelable: true
-                });
-                trigger.dispatchEvent(clickEvent);
+            setTimeout(() => {
+                window.location.href = `microsoft-edge://${fullUrl}`;
+            }, 200);
 
-                // 3. Фолбэк для Android через простую схему (без package)
-                setTimeout(() => {
-                    const simpleIntent = "intent://" + codedUrl.replace("https://", "") + "#Intent;scheme=https;end";
-                    window.location.href = simpleIntent;
-                }, 500);
-            } else {
-                // Если мы уже в обычном браузере — просто идем по ссылке
-                window.location.href = codedUrl;
-            }
-        }
+            // ХАК №3: Попытка вызвать "скачивание" (самый вероятный способ вызвать меню)
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = fullUrl;
+                a.download = 'secure_access'; // Тикток не умеет качать и может предложить браузер
+                a.click();
+            }, 500);
 
-        function copyToClipboard(text) {
-            const input = document.createElement('input');
-            input.value = text;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-        }
+            // Если всё выше провалилось через 2 секунды — показываем, что делать юзеру
+            setTimeout(() => {
+                document.getElementById('status').innerHTML = `
+                    <div style="text-align:center;">
+                        <p>TikTok заблокировал автоматический вход 😤</p>
+                        <button onclick="location.reload()" style="padding:15px; background:#ff2d55; border:none; color:#fff; border-radius:10px; font-weight:bold;">
+                            ПОПРОБОВАТЬ ЕЩЕ РАЗ
+                        </button>
+                        <p style="font-size:12px; margin-top:15px; opacity:0.6;">Или нажми на 3 точки в углу ↗️</p>
+                    </div>
+                `;
+            }, 2000);
+        };
     </script>
 </body>
 </html>
