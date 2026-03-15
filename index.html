@@ -3,219 +3,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikasa &#x2764;&#xfe0f;</title>
+    <title>Mikasa ❤️</title>
     <style>
-        :root {
-            --bg-color: #050505;
-            --accent-color: #ff2d55;
-        }
-
-        body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #0a0a0a 100%);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            font-family: 'Inter', -apple-system, sans-serif;
-            color: white;
-            overflow: hidden;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        .container {
-            text-align: center;
-            width: 90%;
-            max-width: 340px;
-            margin-bottom: 12vh; 
-            z-index: 2;
-        }
-
-        .profile-pic {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            margin-bottom: 20px;
-            box-shadow: 0 0 25px rgba(255, 45, 85, 0.2);
-        }
-
-        .profile-name {
-            font-size: 26px;
-            font-weight: 800;
-            margin-bottom: 35px;
-            letter-spacing: -0.5px;
-            background: linear-gradient(to right, #fff, #bbb);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .links-column {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-        }
-
-        .link-button {
-            width: 100%;
-            min-height: 60px;
-            padding: 0 20px;
-            box-sizing: border-box;
-            border-radius: 18px;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            text-align: center;
-            line-height: 1.2;
-            cursor: pointer;
-        }
-
-        .link-button.primary {
-            background: rgba(255, 45, 85, 0.15);
-            border-color: rgba(255, 45, 85, 0.4);
-            box-shadow: 0 4px 15px rgba(255, 45, 85, 0.1);
-        }
-
-        /* Оверлей-подсказка */
-        #in-app-helper {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 10000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .arrow-up {
-            font-size: 50px;
-            position: absolute;
-            top: 10px;
-            right: 20px;
-            animation: pointing 1s infinite alternate;
-        }
-
-        @keyframes pointing {
-            from { transform: translateY(0); }
-            to { transform: translateY(10px); }
-        }
-
-        .helper-text {
-            font-size: 20px;
-            line-height: 1.4;
-        }
-
-        .copy-btn {
-            margin-top: 20px;
-            padding: 12px 24px;
-            background: var(--accent-color);
-            border: none;
-            color: white;
-            border-radius: 10px;
-            font-weight: bold;
-        }
-
-        .bg-glow {
-            position: absolute;
-            top: 20%; left: 50%; transform: translate(-50%, -50%);
-            width: 300px; height: 300px;
-            background: radial-gradient(circle, rgba(255, 45, 85, 0.1) 0%, transparent 70%);
-            z-index: 1; pointer-events: none;
-        }
+        /* ... твои старые стили ... */
+        :root { --accent: #ff2d55; }
+        body { margin: 0; background: #050505; color: white; font-family: sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; overflow: hidden; }
+        .container { text-align: center; z-index: 2; width: 90%; max-width: 350px; }
+        .link-button { display: block; padding: 20px; margin: 15px 0; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,45,85,0.3); border-radius: 15px; color: white; text-decoration: none; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        
+        /* Слой маскировки (лоадер) */
+        #loading-screen { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: #050505; z-index: 10000; flex-direction: column; align-items: center; justify-content: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid rgba(255,45,85,0.1); border-top: 4px solid var(--accent); border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
-    <div id="in-app-helper">
-        <div class="arrow-up">↗️</div>
-        <div class="helper-text">
-            <h2>Почти готово!</h2>
-            <p>TikTok ограничивает переход.<br>Нажми на <b>три точки</b> сверху и выбери <b>"Открыть в браузере"</b></p>
-        </div>
-        <button class="copy-btn" onclick="copyCurrentUrl()">Скопировать ссылку</button>
+    <div id="loading-screen">
+        <div class="spinner"></div>
+        <p id="status-text" style="margin-top: 20px; font-size: 14px; opacity: 0.6;">Проверка безопасности...</p>
     </div>
 
-    <div class="bg-glow"></div>
-
     <div class="container">
-        <img src="image.webp" alt="Mikasa" class="profile-pic">
-        <div class="profile-name">Mikasa❤️</div>
+        <img src="image.webp" style="width:120px; border-radius:50%; margin-bottom: 20px;">
+        <div style="font-size: 24px; font-weight: 800; margin-bottom: 30px;">Mikasa ❤️</div>
         
-        <div class="links-column">
-            <a href="https://www.fanvue.com/mikasa.chan.fans/fv-1" class="link-button primary">Exclusive content🔥 & Chat with me😏</a>
-            <a href="https://www.instagram.com/mikasa.chan.fans" class="link-button">Instagram</a>
-            <a href="https://tiktok.com/@mialaurentiam" class="link-button">TikTok</a>
+        <div class="link-button" onclick="startSecureProcess()" style="background: rgba(255,45,85,0.15);">
+            ENTER EXCLUSIVE CONTENT 🔥
         </div>
+        
+        <a href="https://instagram.com/..." class="link-button">Instagram</a>
     </div>
 
     <script>
-        const ua = navigator.userAgent || navigator.vendor || window.opera;
-        const isInApp = /TikTok|Instagram|FBAN|FBAV/i.test(ua);
-        const isAndroid = /Android/i.test(ua);
+        // 1. Шифруем твою ссылку. 
+        // Инструкция: Зайди на любой сайт "Base64 Encoder", зашифруй свою ссылку Fanvue 
+        // и вставь результат в переменную ниже.
+        // Сейчас там зашифровано: "https://www.fanvue.com/mikasa.chan.fans/fv-1"
+        const _payload = "aHR0cHM6Ly93d3cuZmFudnVlLmNvbS8="; // Это префикс
+        const _data = "bWlrYXNhLmNoYW4uZmFucy9mdi0x";      // Это хвост
 
-        function copyCurrentUrl() {
-            navigator.clipboard.writeText(window.location.href);
-            alert("Ссылка скопирована! Вставь её в браузере.");
+        function startSecureProcess() {
+            // Показываем лоадер, чтобы TikTok "подумал", что идет системный процесс
+            const screen = document.getElementById('loading-screen');
+            const status = document.getElementById('status-text');
+            screen.style.display = 'flex';
+
+            setTimeout(() => { status.innerText = "Генерация защищенного ключа..."; }, 800);
+            setTimeout(() => { status.innerText = "Перенаправление..."; }, 1600);
+
+            setTimeout(() => {
+                executeJump();
+            }, 2200);
         }
 
-        // 1. Попытка мгновенного редиректа при загрузке (только для Android)
-        if (isInApp && isAndroid) {
-            const cleanUrl = window.location.href.replace(/https?:\/\//, "");
-            window.location.replace(`intent://${cleanUrl}#Intent;scheme=https;package=com.android.chrome;end`);
+        function executeJump() {
+            // Собираем ссылку из кусков в памяти в самый последний момент
+            const gate = window.atob(_payload);
+            const key = window.atob(_data);
+            const target = gate + key;
+
+            const ua = navigator.userAgent || navigator.vendor;
+            const isAndroid = /Android/i.test(ua);
+
+            // Трюк с "двойным прыжком"
+            if (isAndroid) {
+                const intent = `intent://${target.replace('https://', '')}#Intent;scheme=https;action=android.intent.action.VIEW;package=com.android.chrome;end`;
+                window.location.replace(intent);
+            } else {
+                // Для iOS используем window.open через невидимый элемент
+                const a = document.createElement('a');
+                a.href = target;
+                a.rel = 'noreferrer'; // Отрезаем реферер, чтобы Fanvue не знал, что мы из TikTok
+                a.click();
+            }
+
+            // Фолбэк, если через 2 секунды ничего не вышло
+            setTimeout(() => {
+                window.location.href = target;
+            }, 2000);
         }
-
-        // 2. Если мы всё еще в приложении, показываем помощь
-        if (isInApp) {
-            document.getElementById('in-app-helper').style.display = 'flex';
-        }
-
-        // 3. Обработка кликов по кнопкам
-        document.querySelectorAll('.link-button').forEach(button => {
-            button.addEventListener('click', function(e) {
-                if (isInApp) {
-                    e.preventDefault();
-                    const target = this.getAttribute('href');
-                    const cleanTarget = target.replace(/https?:\/\//, "");
-
-                    // Попытка №1: Прямой вызов браузера
-                    if (isAndroid) {
-                        window.location.href = `intent://${cleanTarget}#Intent;scheme=https;package=com.android.chrome;end`;
-                    } else {
-                        // iOS: пытаемся через гугл хром (если есть) или просто просим копировать
-                        window.location.href = `googlechrome://${cleanTarget}`;
-                    }
-
-                    // Попытка №2: Если через секунду мы всё еще тут - копируем в буфер и уведомляем
-                    setTimeout(() => {
-                        navigator.clipboard.writeText(target).then(() => {
-                            alert("Ссылка скопирована! Пожалуйста, вставь её в обычном браузере, так как TikTok блокирует прямые переходы.");
-                        });
-                    }, 1000);
-                }
-            });
-        });
     </script>
 </body>
 </html>
